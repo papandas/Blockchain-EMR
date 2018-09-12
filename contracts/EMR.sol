@@ -96,6 +96,7 @@ contract EMR {
 
   function SetAdministrator (address _admin) public {
     require(msg.sender == owner);
+    require(!administrator[_admin]);
 
     administrator[_admin] = true;
   }
@@ -193,14 +194,14 @@ contract EMR {
   }
 
   function AppointmentUpdate(uint256 _AppointmentIndex, 
-    AppointmentStat _stat, string _remark) public {
+    AppointmentStat _stat) public {
 
     require(administrator[msg.sender] == true || msg.sender == patients[msg.sender].client);
     require(_AppointmentIndex > 0);
     require(_AppointmentIndex <= AppointmentIndex);
 
     appointments[_AppointmentIndex].stat = _stat;
-    appointments[_AppointmentIndex].remark = _remark;
+    //appointments[_AppointmentIndex].remark = _remark;
 
     emit eAppointmentUpdate(_AppointmentIndex, msg.sender);
 
