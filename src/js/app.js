@@ -240,7 +240,27 @@ App = {
       return EMRInstance.SignupPatient(_fullname, _dob, parseInt(_sex),
         parseInt(_marital), _postal_address, _city, parseInt(_postal_code),
         parseInt(_contact_phone), _email, _occupation, _language,
-        _ethnicity, _race, ReportDocsArray, { from: App.account });
+        _ethnicity, _race, ReportDocsArray, { from: App.account, gas: 6000000 });
+
+        /*const _fullname = "Papan Das";
+        const _dob = "14th Nov 1987";
+        const _sex = 0;
+        const _marital = 1;
+        const _postal_address = "Champashri Anchal";
+        const _city = "Siliguri";
+        const _postal_code = "734003";
+        const _contact_phone = "9641443962";
+        const _email = "hum.tum.8765@gmail.com";
+        const _occupation = "Blockchain Developer";
+        const _language = "English";
+        const _ethnicity = "Asian";
+        const _race = "COol";
+        const ReportDocsArray=[0];
+
+      return EMRInstance.SignupPatient(_fullname, _dob, _sex,
+        _marital, _postal_address, _city, _postal_code,
+        _contact_phone, _email, _occupation, _language,
+        _ethnicity, _race, ReportDocsArray, { from: App.account, gas: 6000000 });*/
 
     }).then((recipt) => {
       console.log("Saved successfully.");

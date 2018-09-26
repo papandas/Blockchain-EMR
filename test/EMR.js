@@ -168,11 +168,13 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
             EMRInstance = instance;
             return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, {from: patient1});
         }).then((reply) => {
+            
             return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, {from: patient4});
         }).then(assert.fail).catch(function (error) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
             return EMRInstance.AppointmentAdd(new Date("2018-09-20").getTime(), AppointmentStat, _remark, {from: patient1});
         }).then((receipt)=>{
+            //console.log(receipt);
             assert.equal(receipt.logs.length, 1, 'triggers one event');
             assert.equal(receipt.logs[0].event, 'eAppointmentAdd', 'should be the "eAppointmentUpdate" event');
             //assert.equal(receipt.logs[0].args.index, AppointmentIndex, 'correct index');
@@ -180,11 +182,12 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
             assert.equal(receipt.logs[0].args.sender, patient1, 'correct sender');
             return EMRInstance.AppointmentIndex()
         }).then((results)=>{
+            //console.log(results);
             AppointmentIndex = results.toNumber();
             return EMRInstance.appointments(AppointmentIndex);
         }).then((results)=>{
             //console.log(results);
-            return EMRInstance.AppointmentUpdate(AppointmentIndex, 1, "Good Job", {from: admin1});
+            return EMRInstance.AppointmentUpdate(AppointmentIndex, 1, {from: admin1});
         }).then((receipt)=>{
             assert.equal(receipt.logs.length, 1, 'triggers one event');
             assert.equal(receipt.logs[0].event, 'eAppointmentUpdate', 'should be the "eAppointmentUpdate" event');

@@ -94,6 +94,10 @@ contract EMR {
     administrator[msg.sender] = true;
   }
 
+  function UpdateVersion (string _version) public {
+    version = _version;
+  }
+
   function SetAdministrator (address _admin) public {
     require(msg.sender == owner);
     require(!administrator[_admin]);
