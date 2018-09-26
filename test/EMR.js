@@ -12,7 +12,7 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
     const patient2 = accounts[4];
     const patient3 = accounts[5];
     const patient4 = accounts[6];
- 
+
     it("Initialized the EMR project.", function () {
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
@@ -25,7 +25,7 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
     it("Kill the app.", function () {
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
-            return EMRInstance.kill({from: admin1});
+            return EMRInstance.kill({ from: admin1 });
         }).then(assert.fail).catch(function (error) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
             //return EMRInstance.kill({from: accounts[0]});
@@ -36,20 +36,20 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
     it("Add administrator.", function () {
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
-            return EMRInstance.SetAdministrator(admin2, {from: admin1});
+            return EMRInstance.SetAdministrator(admin2, { from: admin1 });
         }).then(assert.fail).catch(function (error) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
-            return EMRInstance.SetAdministrator(admin1, {from: owner});
+            return EMRInstance.SetAdministrator(admin1, { from: owner });
         }).then((receipt) => {
             //console.log(receipt)
             return EMRInstance.administrator(admin1);
-        }).then((result)=>{
+        }).then((result) => {
             assert.equal(result, true, 'Account Hash is correct');
-            return EMRInstance.SetAdministrator(admin2, {from: owner});
+            return EMRInstance.SetAdministrator(admin2, { from: owner });
         }).then((receipt) => {
             //console.log(receipt)
             return EMRInstance.administrator(admin2);
-        }).then((result)=>{
+        }).then((result) => {
             assert.equal(result, true, 'Account Hash is correct');
         })
     })
@@ -77,87 +77,84 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
         const _provider = "LIC";
         const _plan_name = "Jeven Anand";
         const _policy_number = "0766636636";
-        const ReportDocsArray=[0]
+        const ReportDocsArray = [0]
 
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
 
-            return EMRInstance.SignupPatient(_fullname, _dob, _sex,
+            /*return EMRInstance.SignupPatient(_fullname, _dob, _sex,
                 _marital, _postal_address, _city, _postal_code,
                 _contact_phone, _email, _occupation, _language,
-                _ethnicity, _race, ReportDocsArray, { from: patient1 });
-
+                _ethnicity, _race, ReportDocsArray, { from: patient1 });*/
+            return EMRInstance.SignupPatient(_fullname, _dob, _sex,
+                _marital, _email, ReportDocsArray, { from: patient1 });
 
         }).then((receipt) => {
 
             //console.log(receipt.receipt.transactionHash)
 
             return EMRInstance.SignupPatient(_fullname, _dob, _sex,
-                _marital, _postal_address, _city, _postal_code,
-                _contact_phone, _email, _occupation, _language,
-                _ethnicity, _race, ReportDocsArray, { from: patient1 });
+                _marital, _email, ReportDocsArray, { from: patient1 });
+
 
         }).then(assert.fail).catch(function (error) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
             return EMRInstance.patients(patient1);
-        }).then((results)=>{
+        }).then((results) => {
             assert.equal(results[0], patient1, 'Account Hash is correct');
-            return EMRInstance.patientdetails(patient1);
-        }).then((results)=>{
+            return "EMRInstance.patientdetails(patient1)";
+        }).then((results) => {
             //console.log(results);
             assert.equal(results[3].toNumber(), _contact_phone, 'Contact Phone is correct');
 
             const increment = 1;
 
-            return EMRInstance.PatientUpdate(_fullname + increment, _dob, _sex + increment,
+            /*return EMRInstance.PatientUpdate(_fullname + increment, _dob, _sex + increment,
                 _marital + increment, _postal_address + increment, _city + increment, _postal_code + increment,
                 _contact_phone + increment, _email, _occupation, _language,
-                _ethnicity, _race, { from: patient1 });
+                _ethnicity, _race, { from: patient1 });*/
 
-        }).then((results)=>{
+            return EMRInstance.PatientUpdate(_fullname + increment, _dob, _sex + increment,
+                _marital + increment, _email, { from: patient1 });
+
+        }).then((results) => {
             return EMRInstance.patients(patient1);
-        }).then((results)=>{
+        }).then((results) => {
             //console.log(results);
             const increment = 1;
             assert.equal(results[0], patient1, 'Full name is correct');
 
             return EMRInstance.PatientUpdate(_fullname + increment, _dob, _sex + increment,
-                _marital + increment, _postal_address + increment, _city + increment, _postal_code + increment,
-                _contact_phone + increment, _email, _occupation, _language,
-                _ethnicity, _race, { from: patient2 });
+                _marital + increment, _email, { from: patient2 });
 
 
         })
-        .then(assert.fail).catch(function (error) {
-            assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
-            return EMRInstance.SignupPatient(_fullname + "p2", _dob, _sex,
-                _marital, _postal_address, _city, _postal_code,
-                _contact_phone, _email, _occupation, _language,
-                _ethnicity, _race, ReportDocsArray, { from: patient2 });
+            .then(assert.fail).catch(function (error) {
+                assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
+                return EMRInstance.SignupPatient(_fullname + "p2", _dob, _sex,
+                    _marital, _email, ReportDocsArray, { from: patient2 });
 
 
-        }).then((receipt) => {
-            return EMRInstance.patients(patient2);
-        }).then((results)=>{
-            assert.equal(results[0], patient2, 'Account Hash is correct');
-            return EMRInstance.SignupPatient(_fullname + "p3", _dob, _sex,
-                _marital, _postal_address, _city, _postal_code,
-                _contact_phone, _email, _occupation, _language,
-                _ethnicity, _race, ReportDocsArray, { from: patient3 });
+            }).then((receipt) => {
+                return EMRInstance.patients(patient2);
+            }).then((results) => {
+                assert.equal(results[0], patient2, 'Account Hash is correct');
+                return EMRInstance.SignupPatient(_fullname + "p3", _dob, _sex,
+                    _marital, _email, ReportDocsArray, { from: patient3 });
 
 
-        }).then((receipt) => {
-            return EMRInstance.patients(patient3);
-        }).then((results)=>{
-            assert.equal(results[0], patient3, 'Account Hash is correct');
-        })
+            }).then((receipt) => {
+                return EMRInstance.patients(patient3);
+            }).then((results) => {
+                assert.equal(results[0], patient3, 'Account Hash is correct');
+            })
     })
 
 
     it("Add Appointment.", function () {
-        var random =Math.floor(Math.random() * (10 - 1)) + 10;
+        var random = Math.floor(Math.random() * (10 - 1)) + 10;
         const _datetime = new Date("2018-09-25").getTime();// + random; 
-        const AppointmentStat = 0; 
+        const AppointmentStat = 0;
         const _remark = "";
 
         //console.log(_datetime, new Date(_datetime) );
@@ -166,14 +163,14 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
 
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
-            return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, {from: patient1});
+            return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, { from: patient1 });
         }).then((reply) => {
-            
-            return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, {from: patient4});
+
+            return EMRInstance.AppointmentAdd(_datetime, AppointmentStat, _remark, { from: patient4 });
         }).then(assert.fail).catch(function (error) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
-            return EMRInstance.AppointmentAdd(new Date("2018-09-20").getTime(), AppointmentStat, _remark, {from: patient1});
-        }).then((receipt)=>{
+            return EMRInstance.AppointmentAdd(new Date("2018-09-20").getTime(), AppointmentStat, _remark, { from: patient1 });
+        }).then((receipt) => {
             //console.log(receipt);
             assert.equal(receipt.logs.length, 1, 'triggers one event');
             assert.equal(receipt.logs[0].event, 'eAppointmentAdd', 'should be the "eAppointmentUpdate" event');
@@ -181,19 +178,19 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
             //console.log("Appointment Index", receipt.logs[0].args.index)
             assert.equal(receipt.logs[0].args.sender, patient1, 'correct sender');
             return EMRInstance.AppointmentIndex()
-        }).then((results)=>{
+        }).then((results) => {
             //console.log(results);
             AppointmentIndex = results.toNumber();
             return EMRInstance.appointments(AppointmentIndex);
-        }).then((results)=>{
+        }).then((results) => {
             //console.log(results);
-            return EMRInstance.AppointmentUpdate(AppointmentIndex, 1, {from: admin1});
-        }).then((receipt)=>{
+            return EMRInstance.AppointmentUpdate(AppointmentIndex, 1, { from: admin1 });
+        }).then((receipt) => {
             assert.equal(receipt.logs.length, 1, 'triggers one event');
             assert.equal(receipt.logs[0].event, 'eAppointmentUpdate', 'should be the "eAppointmentUpdate" event');
             assert.equal(receipt.logs[0].args.index, AppointmentIndex, 'correct index');
             assert.equal(receipt.logs[0].args.sender, admin1, 'correct sender');
-            
+
         })
     })
 
@@ -204,17 +201,17 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
 
         return EMR.deployed().then(function (instance) {
             EMRInstance = instance;
-            return EMRInstance.MedicalReportAdd(docname + "1", docpath + "1", docdesc + "1", {from: patient1});
-        }).then((reply)=>{
+            return EMRInstance.MedicalReportAdd(docname + "1", docpath + "1", docdesc + "1", { from: patient1 });
+        }).then((reply) => {
             //console.log(reply);
-            return EMRInstance.MedicalReportAdd(docname + "2", docpath + "2", docdesc + "2", {from: patient1});
-        }).then((reply)=>{
+            return EMRInstance.MedicalReportAdd(docname + "2", docpath + "2", docdesc + "2", { from: patient1 });
+        }).then((reply) => {
             //console.log(reply);
             return EMRInstance.medicalreports(1);
-        }).then((reply)=>{
+        }).then((reply) => {
             console.log(reply);
             return EMRInstance.MedicalReportGet(patient1);
-        }).then((reply)=>{
+        }).then((reply) => {
             console.log(reply.length);
         })
     })

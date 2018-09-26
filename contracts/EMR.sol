@@ -113,15 +113,15 @@ contract EMR {
       string _dob,
       SexType _sex,
       MaritalType _marital,
-      string _postal_address,
+      /*string _postal_address,
       string _city,
       uint256 _postal_code,
-      uint256 _contact_phone,
+      uint256 _contact_phone,*/
       string _email,
-      string _occupation,
+      /*string _occupation,
       string _language,
       string _ethnicity,
-      string _race,
+      string _race,*/
       uint256[] _medicalreport) public {
 
     require(msg.sender != patients[msg.sender].client);
@@ -134,14 +134,14 @@ contract EMR {
       _email, 
       _medicalreport);
     
-    patientdetails[msg.sender] = PatientDetail(_postal_address,
+    /*patientdetails[msg.sender] = PatientDetail(_postal_address,
       _city,
       _postal_code,
       _contact_phone,
       _occupation,
       _language,
       _ethnicity,
-      _race);
+      _race);*/
   }
 
 
@@ -149,15 +149,15 @@ contract EMR {
       string _dob,
       SexType _sex,
       MaritalType _marital,
-      string _postal_address,
+      string _email
+      /*string _postal_address,
       string _city,
       uint256 _postal_code,
       uint256 _contact_phone,
-      string _email,
       string _occupation,
       string _language,
       string _ethnicity,
-      string _race) public {
+      string _race*/) public {
 
     require(msg.sender == patients[msg.sender].client);
 
@@ -167,14 +167,14 @@ contract EMR {
     patients[msg.sender].marital = _marital;
     patients[msg.sender].email = _email;
     
-    patientdetails[msg.sender].postal_address = _postal_address;
+    /*patientdetails[msg.sender].postal_address = _postal_address;
     patientdetails[msg.sender].city = _city;
     patientdetails[msg.sender].postal_code = _postal_code;
     patientdetails[msg.sender].contact_phone = _contact_phone;
     patientdetails[msg.sender].occupation = _occupation;
     patientdetails[msg.sender].language = _language;
     patientdetails[msg.sender].ethnicity = _ethnicity;
-    patientdetails[msg.sender].race = _race;
+    patientdetails[msg.sender].race = _race;*/
 
   }
 

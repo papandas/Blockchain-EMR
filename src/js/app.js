@@ -204,9 +204,7 @@ App = {
     App.contracts.EMR.deployed().then(function (instance) {
       EMRInstance = instance;
       return EMRInstance.PatientUpdate(_fullname, _dob, parseInt(_sex),
-        parseInt(_marital), _postal_address, _city, _postal_code,
-        _contact_phone, _email, _occupation, _language,
-        _ethnicity, _race, { from: App.account });
+        parseInt(_marital), _email, { from: App.account });
 
     }).then((recipt) => {
       console.log("Update successfully.");
@@ -238,9 +236,7 @@ App = {
     App.contracts.EMR.deployed().then(function (instance) {
       EMRInstance = instance;
       return EMRInstance.SignupPatient(_fullname, _dob, parseInt(_sex),
-        parseInt(_marital), _postal_address, _city, parseInt(_postal_code),
-        parseInt(_contact_phone), _email, _occupation, _language,
-        _ethnicity, _race, ReportDocsArray, { from: App.account, gas: 6000000 });
+        parseInt(_marital), _email, ReportDocsArray, { from: App.account, gas: 6000000 });
 
         /*const _fullname = "Papan Das";
         const _dob = "14th Nov 1987";
