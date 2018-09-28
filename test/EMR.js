@@ -101,11 +101,25 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
             assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
             return EMRInstance.patients(patient1);
         }).then((results) => {
+
             assert.equal(results[0], patient1, 'Account Hash is correct');
-            return "EMRInstance.patientdetails(patient1)";
+
+            return EMRInstance.SavePatientDetails(_postal_address, _city,
+                parseInt(_postal_code), parseInt(_contact_phone), _occupation,
+                _language, _ethnicity, _race, { from: patient1 });
+
+        }).then((receipt)=>{
+
+            return EMRInstance.PatientDetailUpdate(_postal_address, _city,
+                parseInt(_postal_code + "1"), parseInt(_contact_phone),
+                _occupation, _language, _ethnicity, _race);
+        
+        }).then((receipt)=>{
+
+            return EMRInstance.patientdetails(patient1);
         }).then((results) => {
             //console.log(results);
-            assert.equal(results[3].toNumber(), _contact_phone, 'Contact Phone is correct');
+            assert.equal(results[2].toNumber(), parseInt(_postal_code + "1"), 'Contact Phone is correct');
 
             const increment = 1;
 
@@ -128,16 +142,15 @@ contract('Initialize EMR Smart-Contract.', function (accounts) {
                 _marital + increment, _email, { from: patient2 });
 
 
-        })
-            .then(assert.fail).catch(function (error) {
+        }).then(assert.fail).catch(function (error) {
                 assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
                 return EMRInstance.SignupPatient(_fullname + "p2", _dob, _sex,
                     _marital, _email, ReportDocsArray, { from: patient2 });
 
 
-            }).then((receipt) => {
+        }).then((receipt) => {
                 return EMRInstance.patients(patient2);
-            }).then((results) => {
+        }).then((results) => {
                 assert.equal(results[0], patient2, 'Account Hash is correct');
                 return EMRInstance.SignupPatient(_fullname + "p3", _dob, _sex,
                     _marital, _email, ReportDocsArray, { from: patient3 });

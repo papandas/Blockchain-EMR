@@ -415,6 +415,25 @@ App = {
       $('#AppointmentCardContainer').empty();
       App.contracts.EMR.deployed().then(function (instance) {
         EMRInstance = instance;
+        return EMRInstance.MedicalReportGet({from: App.account});
+      }).then((reply)=>{
+        console.log(reply);
+        let DocCount = reply.length;
+        console.log("Total number of Docs: " + DocCount)
+        let j = 1;
+        while(j < DocCount){
+          
+          EMRInstance.medicalreports(reply[j].toNumber()).then((result)=>{
+            console.log(j, result);
+            if(DocCount == j + 1){
+              console.log("DISPLAY");
+            }
+          })
+
+          console.log(j , ") Docs Ids: ", reply[j].toNumber());
+          j++;
+        }
+        console.log("Complete Loading Docs List");
         return EMRInstance.AppointmentIndex();
       }).then((reply) => {
         AppCount = reply.toNumber();

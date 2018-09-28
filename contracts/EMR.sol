@@ -4,7 +4,7 @@ contract EMR {
 
   enum SexType { MALE, FEMALE }
   enum MaritalType { single, married, remarried, separated, divorced, widowed }
-  enum AppointmentStat { CREATED, APPROVED, REJECTED, PENDING, DONE }
+  enum AppointmentStat { CREATED, APPROVED, REJECTED, BILLING, CLOSE }
 
   struct Patient {
     address client;
@@ -62,7 +62,6 @@ contract EMR {
   mapping(address => PatientEmployer) public patientemployers;
   mapping(address => PatientInsurance) public patientinsurances;
 
-  
   mapping(uint256 => Appointment) public appointments;
   mapping(address => bool) public administrator;
 
@@ -113,15 +112,7 @@ contract EMR {
       string _dob,
       SexType _sex,
       MaritalType _marital,
-      /*string _postal_address,
-      string _city,
-      uint256 _postal_code,
-      uint256 _contact_phone,*/
       string _email,
-      /*string _occupation,
-      string _language,
-      string _ethnicity,
-      string _race,*/
       uint256[] _medicalreport) public {
 
     require(msg.sender != patients[msg.sender].client);
@@ -133,15 +124,29 @@ contract EMR {
       _marital, 
       _email, 
       _medicalreport);
-    
-    /*patientdetails[msg.sender] = PatientDetail(_postal_address,
+
+  }
+
+  function SavePatientDetails(string _postal_address,
+      string _city,
+      uint256 _postal_code,
+      uint256 _contact_phone,
+      string _occupation,
+      string _language,
+      string _ethnicity,
+      string _race) public {  
+
+    require(msg.sender == patients[msg.sender].client);
+
+    patientdetails[msg.sender] = PatientDetail(_postal_address,
       _city,
       _postal_code,
       _contact_phone,
       _occupation,
       _language,
       _ethnicity,
-      _race);*/
+      _race);
+
   }
 
 
@@ -149,15 +154,7 @@ contract EMR {
       string _dob,
       SexType _sex,
       MaritalType _marital,
-      string _email
-      /*string _postal_address,
-      string _city,
-      uint256 _postal_code,
-      uint256 _contact_phone,
-      string _occupation,
-      string _language,
-      string _ethnicity,
-      string _race*/) public {
+      string _email) public {
 
     require(msg.sender == patients[msg.sender].client);
 
@@ -166,19 +163,32 @@ contract EMR {
     patients[msg.sender].sex = _sex;
     patients[msg.sender].marital = _marital;
     patients[msg.sender].email = _email;
-    
-    /*patientdetails[msg.sender].postal_address = _postal_address;
+
+  }
+
+  function PatientDetailUpdate(string _postal_address,
+      string _city,
+      uint256 _postal_code,
+      uint256 _contact_phone,
+      string _occupation,
+      string _language,
+      string _ethnicity,
+      string _race) public {
+
+    require(msg.sender == patients[msg.sender].client);
+
+    patientdetails[msg.sender].postal_address = _postal_address;
     patientdetails[msg.sender].city = _city;
     patientdetails[msg.sender].postal_code = _postal_code;
     patientdetails[msg.sender].contact_phone = _contact_phone;
     patientdetails[msg.sender].occupation = _occupation;
     patientdetails[msg.sender].language = _language;
     patientdetails[msg.sender].ethnicity = _ethnicity;
-    patientdetails[msg.sender].race = _race;*/
+    patientdetails[msg.sender].race = _race;
 
   }
 
-
+  
   function AppointmentAdd(uint256 _datetime, 
     AppointmentStat _stat, string _remark) public {
     
