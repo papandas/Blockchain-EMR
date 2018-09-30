@@ -26,7 +26,7 @@ App = {
   },
 
   initContracts: function () {
-    $.getJSON("EMR.json", function (emr) {
+    $.getJSON("EMRContract.json", function (emr) {
       App.contracts.EMR = TruffleContract(emr);
       App.contracts.EMR.setProvider(App.web3Provider);
       App.contracts.EMR.deployed().then(function (emr) {
@@ -107,7 +107,7 @@ App = {
               $('#email').html('Email: ' + patient[5]);
 
               //patientdetails
-              return EMRInstance.patientdetails(App.account).then((patient) => {
+              /*return EMRInstance.patientdetails(App.account).then((patient) => {
                 $('#postal_address').html('Address: ' + patient[0]);
                 $('#city').html('City: ' + patient[1]);
                 $('#postal_code').html('Postal Code: ' + patient[2]);
@@ -118,7 +118,7 @@ App = {
                 $('#language').html('Language: ' + patient[5]);
                 $('#ethnicity').html('Ethnicity: ' + patient[6]);
                 $('#race').html('Race: ' + patient[7]);
-              })
+              })*/
             })
 
           } else {
@@ -145,9 +145,9 @@ App = {
       $('#email').val(patient[5]);
 
       //patientdetails
-      return EMRInstance.patientdetails(App.account);
+      //return EMRInstance.patientdetails(App.account);
 
-    }).then((patient) => {
+    })/*.then((patient) => {
 
       $('#postal_address').val(patient[0]);
       $('#city').val(patient[1]);
@@ -159,7 +159,7 @@ App = {
       $('#language').val(patient[5]);
       $('#ethnicity').val(patient[6]);
       $('#race').val(patient[7]);
-    })
+    })*/
   },
 
   LoadSignupPage: function () {
@@ -220,48 +220,37 @@ App = {
     const _dob = $('#dob').val();
     const _sex = $('#sex').find(':selected').val();
     const _marital = $('#marital').find(':selected').val();
-    const _postal_address = $('#postal_address').val();
-    const _city = $('#city').val();
-    const _postal_code = $('#postal_code').val();
-    const _contact_phone = $('#contact_phone').val();
+    //const _postal_address = $('#postal_address').val();
+    //const _city = $('#city').val();
+    //const _postal_code = $('#postal_code').val();
+    //const _contact_phone = $('#contact_phone').val();
     const _email = $('#email').val();
-    const _occupation = $('#occupation').val();
-    const _language = $('#language').val();
-    const _ethnicity = $('#ethnicity').val();
-    const _race = $('#race').val();
+    //const _occupation = $('#occupation').val();
+    //const _language = $('#language').val();
+    //const _ethnicity = $('#ethnicity').val();
+    //const _race = $('#race').val();
     const ReportDocsArray = [0]
 
     App.loaderShow(true);
 
     App.contracts.EMR.deployed().then(function (instance) {
       EMRInstance = instance;
-      return EMRInstance.SignupPatient(_fullname, _dob, parseInt(_sex),
-        parseInt(_marital), _email, ReportDocsArray, { from: App.account, gas: 6000000 });
+      //return EMRInstance.SignupPatient(_fullname, _dob, parseInt(_sex), parseInt(_marital), _email, ReportDocsArray, { from: App.account });
 
-        /*const _fullname = "Papan Das";
-        const _dob = "14th Nov 1987";
-        const _sex = 0;
-        const _marital = 1;
-        const _postal_address = "Champashri Anchal";
-        const _city = "Siliguri";
-        const _postal_code = "734003";
-        const _contact_phone = "9641443962";
-        const _email = "hum.tum.8765@gmail.com";
-        const _occupation = "Blockchain Developer";
-        const _language = "English";
-        const _ethnicity = "Asian";
-        const _race = "COol";
-        const ReportDocsArray=[0];
+      /*const _fullname = "Papan Das";
+      const _dob = "14th Nov 1987";
+      const _sex = 0;
+      const _marital = 1;
+      const _email = "hum.tum.8765@gmail.com";
+      const ReportDocsArray = [0]*/
+      //
+      return EMRInstance.SignupPatient(_fullname, _dob, _sex, _marital, _email, ReportDocsArray,{ from: App.account });
 
-      return EMRInstance.SignupPatient(_fullname, _dob, _sex,
-        _marital, _postal_address, _city, _postal_code,
-        _contact_phone, _email, _occupation, _language,
-        _ethnicity, _race, ReportDocsArray, { from: App.account, gas: 6000000 });*/
 
     }).then((recipt) => {
       console.log("Saved successfully.");
       App.LoadDefaultPage();
-    }).catch((error)=> {console.log(error.message); App.loaderShow(false);});
+    }).catch((error) => { console.log(error.message); App.loaderShow(false); });
 
 
   },
@@ -380,7 +369,7 @@ App = {
               str += '<br />Account Hash: ' + appointment[1];
               str += '<br />' + appointment[4];
               str += '<br />Current Status: ' + App.CONST_APPOINTMENT[appointment[3].toNumber()];
-              if(appointment[3].toNumber() == 0){
+              if (appointment[3].toNumber() == 0) {
                 str += '<button onclick="App.AppointmentUpdate(' + appointment[0] + ', 1)" class="btn btn-primary pull-right">Accept</button>';
                 str += '<button onclick="App.AppointmentUpdate(' + appointment[0] + ', 2)" class="btn btn-primary pull-right">Cancle</button>';
               }
@@ -415,22 +404,30 @@ App = {
       $('#AppointmentCardContainer').empty();
       App.contracts.EMR.deployed().then(function (instance) {
         EMRInstance = instance;
-        return EMRInstance.MedicalReportGet({from: App.account});
-      }).then((reply)=>{
-        console.log(reply);
+        return EMRInstance.MedicalReportGet(App.account);
+      }).then((reply) => {
+        ////console.log(reply);
         let DocCount = reply.length;
-        console.log("Total number of Docs: " + DocCount)
+        //console.log("Total number of Docs: " + DocCount)
         let j = 1;
-        while(j < DocCount){
-          
-          EMRInstance.medicalreports(reply[j].toNumber()).then((result)=>{
-            console.log(j, result);
-            if(DocCount == j + 1){
-              console.log("DISPLAY");
+        let loaded_j = 1;
+        let str = '<label class="bmd-label-floating">Select Report:</label>'
+        str += '<select id="reportList" class="form-control">';
+        while (j < DocCount) {
+          EMRInstance.medicalreports(reply[j].toNumber()).then((result) => {
+            //console.log(j, result);
+            str += '<option value="'+loaded_j+'">'+result[0]+'</option>'
+            if (DocCount == loaded_j + 1) {
+              //console.log("DISPLAY");
+              str += '</select>';
+              $('#reportList').empty();
+              $('#reportList').append(str);
+            }else{
+              loaded_j++;
             }
           })
 
-          console.log(j , ") Docs Ids: ", reply[j].toNumber());
+          //console.log(j, ") Docs Ids: ", reply[j].toNumber());
           j++;
         }
         console.log("Complete Loading Docs List");
@@ -454,7 +451,8 @@ App = {
                 str += '<div class="col-md-12">';
                 str += '<div class="col">';
                 str += date.toLocaleString();
-                str += '<br />' + appointment[4];
+                const obj = JSON.parse(appointment[4]);
+                str += '<br />' + obj.length;
                 str += '<br />Status: ' + App.CONST_APPOINTMENT[appointment[3].toNumber()];
                 str += '</div>';
                 str += '<hr />';
@@ -484,9 +482,9 @@ App = {
     var date = new Date(month + "/" + day + "/" + year + " " + hours + ":" + min + ":00");
     var milliseconds = date.getTime();
     const AppointmentStat = 0;
-    const _remark = $('#remark').val();
-
-    console.log(milliseconds);
+    const _reportIndex = '{"r":' + $('#reportList').find(':selected').val() + ', "m":"'+$('#message').val()+'"}';
+    const _remark = JSON.stringify(_reportIndex);
+    //console.log(milliseconds, AppointmentStat, _remark);
 
     /*return;*/
 
@@ -502,7 +500,7 @@ App = {
     })
   },
 
-  AppointmentUpdate: function(ind, param){
+  AppointmentUpdate: function (ind, param) {
 
     console.log(ind, param);
     //return;
@@ -519,7 +517,7 @@ App = {
       console.log("Appointment updated Successfully.");
 
       App.LoadAppointmentPageForAdmin();
-    }).catch((error)=> {console.log(error.message); App.loaderShow(false);});
+    }).catch((error) => { console.log(error.message); App.loaderShow(false); });
   },
 
   /** MISLENOUS FUNCTINOS */

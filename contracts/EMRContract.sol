@@ -1,6 +1,6 @@
 pragma solidity ^0.4.23;
 
-contract EMR {
+contract EMRContract {
 
   enum SexType { MALE, FEMALE }
   enum MaritalType { single, married, remarried, separated, divorced, widowed }
@@ -14,32 +14,6 @@ contract EMR {
     MaritalType marital;
     string email;
     uint256[] medicalreport;
-  }
-
-  struct PatientDetail {
-    string postal_address;
-    string city;
-    uint256 postal_code;
-    uint256 contact_phone;
-    string occupation;
-    string language;
-    string ethnicity;
-    string race;
-  }
-
-  struct PatientInsurance {
-    string provider;
-    string plan_name;
-    string policy_number;
-  }
-
-  struct PatientEmployer {
-    string employer_name;
-    string employer_address;
-    string employer_city;
-    string employer_state;
-    string employer_postal_code;
-    string employer_country;
   }
 
   struct Appointment{
@@ -58,9 +32,6 @@ contract EMR {
   }
   
   mapping(address => Patient) public patients;
-  mapping(address => PatientDetail) public patientdetails;
-  mapping(address => PatientEmployer) public patientemployers;
-  mapping(address => PatientInsurance) public patientinsurances;
 
   mapping(uint256 => Appointment) public appointments;
   mapping(address => bool) public administrator;
@@ -127,28 +98,6 @@ contract EMR {
 
   }
 
-  function SavePatientDetails(string _postal_address,
-      string _city,
-      uint256 _postal_code,
-      uint256 _contact_phone,
-      string _occupation,
-      string _language,
-      string _ethnicity,
-      string _race) public {  
-
-    require(msg.sender == patients[msg.sender].client);
-
-    patientdetails[msg.sender] = PatientDetail(_postal_address,
-      _city,
-      _postal_code,
-      _contact_phone,
-      _occupation,
-      _language,
-      _ethnicity,
-      _race);
-
-  }
-
 
   function PatientUpdate(string _fullname,
       string _dob,
@@ -163,28 +112,6 @@ contract EMR {
     patients[msg.sender].sex = _sex;
     patients[msg.sender].marital = _marital;
     patients[msg.sender].email = _email;
-
-  }
-
-  function PatientDetailUpdate(string _postal_address,
-      string _city,
-      uint256 _postal_code,
-      uint256 _contact_phone,
-      string _occupation,
-      string _language,
-      string _ethnicity,
-      string _race) public {
-
-    require(msg.sender == patients[msg.sender].client);
-
-    patientdetails[msg.sender].postal_address = _postal_address;
-    patientdetails[msg.sender].city = _city;
-    patientdetails[msg.sender].postal_code = _postal_code;
-    patientdetails[msg.sender].contact_phone = _contact_phone;
-    patientdetails[msg.sender].occupation = _occupation;
-    patientdetails[msg.sender].language = _language;
-    patientdetails[msg.sender].ethnicity = _ethnicity;
-    patientdetails[msg.sender].race = _race;
 
   }
 
@@ -256,20 +183,7 @@ contract EMR {
     return patients[_addr].medicalreport;
   }
 
-  /*function MedicalReportUpdate(uint256 _index, string _docname,
-    string _docpath,
-    string _docdesp, bool _isActive) public {
-
-      require(msg.sender == patients[msg.sender].client, "Is a client");
-      require(_index > 0, "Valid index number passed");
-      //require(_index == medicalreports[msg.sender].index, "Correct Index number passed.");
-
-      //medicalreports[patient].docname = _docname;
-      //medicalreports[patient].docpath =  _docpath;
-      //medicalreports[patient].docdesp =  _docdesp;
-      //medicalreports[patient].isActive = _isActive;
-
-  }*/
+ 
 
   function kill() public {
     require(msg.sender == owner);
