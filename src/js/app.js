@@ -445,7 +445,7 @@ App = {
         str += '<select id="reportList" class="form-control">';
         while (j < DocCount) {
           EMRInstance.medicalreports(reply[j].toNumber()).then((result) => {
-            str += '<option value="' + loaded_j + '">' + result[0] + '</option>'
+            str += '<option value="' + result[4] + '">' + result[0] + '</option>'
 
             /** Check if the List is complete and loaded. */
             if (DocCount == loaded_j + 1) {
@@ -482,7 +482,7 @@ App = {
                 if (obj['rep']) {
                   EMRInstance.medicalreports(obj['rep'])
                     .then((report) => {
-
+                      console.log(report)
                       str += '<div class="col-md-3">';
                       str += '<a href="' + report[1] + '" target="blank"><img src="' + report[1] + '" width="100" height="100"></a>';
                       str += '</div>';

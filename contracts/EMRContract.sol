@@ -29,6 +29,7 @@ contract EMRContract {
     string docpath;
     string docdesp;
     bool isActive;
+    uint256 index;
   }
   
   mapping(address => Patient) public patients;
@@ -177,7 +178,7 @@ contract EMRContract {
       medicalreports[MedicalReportIndex] = MedicalReport(_docname, 
         _docpath, 
         _docdesp, 
-        true);
+        true, MedicalReportIndex);
 
       patients[msg.sender].medicalreport.push(MedicalReportIndex);
 
